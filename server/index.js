@@ -5,6 +5,7 @@ import cors from 'cors';
 dotenv.config();
 const app=express();
 import userRoutes from "./routes/user.routes.js";
+import meetingRoutes from "./routes/meeting.routes.js";
 import DbConnection from "./database/db.connection.js";
 DbConnection();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/user',userRoutes);
+app.use('/meeting',meetingRoutes);
 
 app.get("/",(req,res) => {
     res.sendStatus(404);
