@@ -8,7 +8,6 @@ import { store } from "./Store.js";
 import AuthLayer from "./components/AuthLayer.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <AuthLayer>
@@ -16,5 +15,4 @@ createRoot(document.getElementById("root")).render(
         </AuthLayer>
       </Provider>
     </BrowserRouter>
-  </StrictMode>
 );

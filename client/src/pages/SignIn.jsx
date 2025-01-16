@@ -6,6 +6,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/userSlice.js";
+import { toast } from 'react-toastify';
+
 
 function SignIn() {
   const dispatch = useDispatch();
@@ -28,6 +30,7 @@ function SignIn() {
       if (response.status == 200) {
         dispatch(login(response.data.user));
         localStorage.setItem("token", response.data.token);
+        toast.success('Logged in successfully');
         navigate("/");
       } else {
         setError(response.data.message);

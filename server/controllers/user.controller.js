@@ -18,6 +18,7 @@ export const loginUser = async (req, res) => {
     
     res.cookie("token", token,{
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+        httpOnly: true
     })
 
     res.status(200).json({ user: userFound, token });
@@ -43,6 +44,7 @@ export const registerUser = async (req, res) => {
     const token= await newUser.generateToken();
     res.cookie("token", token,{
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+        httpOnly: true
     });
 
     res.status(201).json({ user: newUser, token });
