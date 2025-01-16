@@ -8,6 +8,10 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
+import NotFound from "./pages/NotFound";
+import JoinMeeting from "./pages/JoinMeeting";
+import CreateMeeting from "./pages/CreateMeeting";
+import Room from "./pages/Room";
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
+        <Route path="/join-meeting" element={<JoinMeeting/>}></Route>
+        <Route path="/create-meeting" element={<CreateMeeting/>}></Route>
+        <Route path="/room/:roomid" element={<Room/>}></Route>
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </>
   );
