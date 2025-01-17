@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const roomSchema = new mongoose.Schema({
     meetingId: {
-        type: Integer,
+        type: Number,
         required: true,
         unique: true
     },
@@ -25,7 +25,7 @@ const roomSchema = new mongoose.Schema({
         default: Date.now
     },
     NumberOfParticipants: {
-        type: Integer,
+        type: Number,
         default: 0,
         MaxSize: 2,
     }

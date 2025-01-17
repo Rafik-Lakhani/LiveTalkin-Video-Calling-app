@@ -1,5 +1,5 @@
-import roomModel from "../models/room.model";
-import UserModel from "../models/user.model";
+import roomModel from "../models/room.model.js";
+import UserModel from "../models/user.model.js";
 
 export const createMetting= async (req,res)=>{
     const {name,email}=req.query;
@@ -18,7 +18,7 @@ export const createMetting= async (req,res)=>{
     res.status(201).json({room:room, roomId:roomId});
 };
 
-export const joinMeeting= async (req,res)=>{
+export const joinMeeting = async (req,res)=>{
     const {roomId,email}=req.query;
     if(!roomId){
         return res.status(400).json({message: 'Meeting ID is required'});
@@ -30,6 +30,9 @@ export const joinMeeting= async (req,res)=>{
     const room=await roomModel.findOne({meetingId:roomId});
     if(!room){
         return res.status(404).json({message: 'Meeting not found'});
+    }
+    if(room.NumberOfParticipants >= 2){
+        return res.status(409).json({message: 'Meeting is full'});
     }
     res.status(200).json({room:room});
 }

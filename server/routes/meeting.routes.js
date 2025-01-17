@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { createMetting,joinMeeting } from "../controllers/meeting.controller";
+import { createMetting , joinMeeting } from "../controllers/meeting.controller.js";
 
 
 router.get('/create-meeting',createMetting);
