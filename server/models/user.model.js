@@ -23,7 +23,7 @@ userSchema.methods.camparePassword = async function (password)  {
 }
 
 userSchema.methods.generateToken = async function() {
-    const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET);
     return token;
 }
 

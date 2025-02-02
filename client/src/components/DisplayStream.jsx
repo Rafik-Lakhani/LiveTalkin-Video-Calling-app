@@ -1,8 +1,37 @@
-import React from "react";
+import React,{useEffect} from "react";
+import ReactPlayer from "react-player";
 
 function DisplayStream({ stream, message, userName}) {
+
+  useEffect(() => {
+    console.log('screen use Effect')
+    console.log(stream);
+    const screen = document.getElementById("screen");
+    if (stream && screen) {
+      console.log(`Setting ${userName}'s stream:`, stream.getTracks());
+      screen.srcObject = stream;
+      screen.play().catch(error => {
+        console.error(`Error playing ${userName}'s video:`, error);
+      });
+
+      // Cleanup function
+      return () => {
+        screen.srcObject = null;
+      };
+    }
+  }, [stream, userName]);
+  
+  
   return stream ? (
-    <video src={stream} className="w-full h-full"></video>
+    <div className="w-full h-full">
+      <video 
+        id="screen"
+        autoPlay 
+        playsInline
+        muted={userName !== "Remote"}
+        className="w-full h-full object-cover"
+      />
+    </div>
   ) : message ? (
     <>
       <div className="w-full h-full">

@@ -31,8 +31,5 @@ export const joinMeeting = async (req,res)=>{
     if(!room){
         return res.status(404).json({message: 'Meeting not found'});
     }
-    if(room.NumberOfParticipants >= 2){
-        return res.status(409).json({message: 'Meeting is full'});
-    }
     res.status(200).json({room:room});
 }
