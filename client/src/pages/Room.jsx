@@ -33,7 +33,8 @@ function Room() {
 
     // Initialize Peer
     peerRef.current = new Peer({
-      host: import.meta.env.VITE_SOCKET_SERVER_URL,
+      host: import.meta.env.VITE_BACKEND_HOST_NAME,
+      port: 3000,
       path: "/peerjs",
     });
 
@@ -68,9 +69,9 @@ function Room() {
         addVideoToGrid(myVideo, stream);
       } catch (error) {
         console.error("Error accessing media devices:", error);
-        alert(
-          "Failed to access camera/microphone. Please check your permissions."
-        );
+        // alert(
+        //   "Failed to access camera/microphone. Please check your permissions."
+        // );
       }
     };
     setupStream();
@@ -94,13 +95,6 @@ function Room() {
     socketRef.current.on("user-disconnected", (userId) => {
       console.log("User disconnected:", userId);
     });
-
-    return () => {
-      console.log("Cleaning up...");
-      peerRef.current?.destroy();
-      myStreamRef.current?.getTracks().forEach((track) => track.stop());
-      socketRef.current?.disconnect();
-    };
   }, []);
 
   useEffect(() => {
@@ -115,17 +109,18 @@ function Room() {
   }, [callCut]);
 
   const addVideoToGrid = (videoElement, stream) => {
-    if (!stream || stream.getVideoTracks().length === 0) {
-      // If no video stream, display a placeholder
-      const placeholder = document.createElement("div");
-      placeholder.innerText = "No Video Available";
-      placeholder.className =
-        "flex items-center justify-center w-full h-40 bg-gray-700 text-white text-lg rounded-lg";
-      videoGridRef.current.append(placeholder);
-      return;
-    }
+    // if (!stream || stream.getVideoTracks().length === 0) {
+    //   // If no video stream, display a placeholder
+    //   const placeholder = document.createElement("div");
+    //   placeholder.innerText = "No Video Available";
+    //   placeholder.className =
+    //     "flex items-center justify-center w-full h-40 bg-gray-700 text-white text-lg rounded-lg";
+    //   videoGridRef.current.append(placeholder);
+    //   return;
+    // }
 
     videoElement.srcObject = stream;
+    videoElement.className = "w-[500px] h-[350px] object-cover rounded-lg";
     videoElement.addEventListener("loadedmetadata", () => {
       videoElement.play();
       videoGridRef.current.append(videoElement);
@@ -174,35 +169,45 @@ function Room() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-800 text-white">
-      {/* add user popup */}
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+      {/* Add User Popup */}
       {addUserPopup && (
         <AddUserPopup roomId={roomId} setShowPopup={setAddUserPopup} />
       )}
-      <header className="bg-gray-800 py-3 px-6 flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-blue-400">{meetingName}</h1>
+
+      {/* Header */}
+      <header className="bg-gray-800 py-4 px-6 flex justify-between items-center shadow-lg">
+        <h1 className="text-xl font-bold text-blue-400 truncate">
+          {meetingName}
+        </h1>
         <button
           onClick={() => setAddUserPopup(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
         >
           Add User
         </button>
       </header>
-      <div className="flex flex-grow overflow-hidden">
+
+      {/* Video Grid - Always Centered */}
+      <div className="flex flex-grow justify-center items-center overflow-auto px-4 py-6">
         <div
           ref={videoGridRef}
-          className="grid gap-4 p-4 flex-grow justify-center items-center m-auto"
-        ></div>
+          className="grid gap-4 w-full max-w-5xl mx-auto justify-center items-center m-auto"
+        >
+          {/* Video elements will be dynamically added here */}
+        </div>
       </div>
-      <div className="absolute bottom-0 right-2/4">
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
         <ActionButtonContainer
           audioOn={audioOn}
           setAudioOn={setAudioOn}
           videoOn={videoOn}
           setVideoOn={setVideoOn}
           setCallCut={setCallCut}
-          />
-          </div>
+        />
+      </div>
     </div>
   );
 }

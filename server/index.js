@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
     socket.on("join-room", async ({roomId, userId,emailId}) => {
         socket.join(roomId);
         const room = await userJoinInRoom(socket.id,emailId,roomId);
+        console.log(room);
         if(room==false) {
             socket.emit('something-went-wrong', { message: "Something went wrong" });
             return;

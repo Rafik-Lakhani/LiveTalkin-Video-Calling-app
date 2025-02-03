@@ -12,8 +12,8 @@ function Footer() {
             to="/"
             className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
           >
-            <span className="text-2xl font-bold text-blue-500 hover:text-blue-300 transition duration-300">
-              Livetalking
+            <span className="text-3xl font-bold text-blue-500 hover:text-blue-300 transition duration-300">
+            Live Talking
             </span>
           </Link>
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-300 sm:mb-0">

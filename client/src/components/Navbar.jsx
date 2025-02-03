@@ -6,14 +6,14 @@ function Navbar() {
   const {isAuthenticated,user}= useSelector((state)=>state.user);
 
   return (
-    <nav className="bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg">
+    <nav className="bg-gray-900 shadow-lg">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent hover:from-blue-400 hover:to-blue-300 transition duration-300">
-            Livetalking
+          <span className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent hover:from-blue-400 hover:to-blue-300 transition duration-300">
+            Live Talking
           </span>
         </Link>
 
@@ -21,7 +21,7 @@ function Navbar() {
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
           id="navbar-cta"
         >
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg bg-gray-800/50 backdrop-blur-sm md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 items-center">
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg backdrop-blur-sm md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 items-center">
             <li>
               <Link
                 to="/"
