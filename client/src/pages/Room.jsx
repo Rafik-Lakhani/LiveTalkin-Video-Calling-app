@@ -4,6 +4,7 @@ import Peer from "peerjs";
 import ActionButtonContainer from "../components/ActionButtonContainer";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
+import AddUserPopup from "../components/AddUserPopup";
 
 function Room() {
   const videoGridRef = useRef();
@@ -12,6 +13,7 @@ function Room() {
   const [audioOn, setAudioOn] = useState(true);
   const [videoOn, setVideoOn] = useState(true);
   const [callCut, setCallCut] = useState(false);
+  const [addUserPopup, setAddUserPopup] = useState(false);
   const [meetingName, setMeetingName] = useState("");
   const myStreamRef = useRef(null);
   const peerRef = useRef(null);
@@ -24,15 +26,14 @@ function Room() {
   }
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3000"); // Initialize socket first
+    socketRef.current = io(import.meta.env.VITE_SOCKET_SERVER_URL); // Initialize socket first
     socketRef.current.on("connect", () => {
       console.log("Connected to socket server");
     });
 
     // Initialize Peer
     peerRef.current = new Peer({
-      host: "localhost",
-      port: 3000,
+      host: import.meta.env.VITE_SOCKET_SERVER_URL,
       path: "/peerjs",
     });
 
@@ -54,23 +55,24 @@ function Room() {
       });
     });
 
-    const myVideo = document.createElement("video");
-    myVideo.muted = true;
-
-    // Setup Media Stream
     const setupStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true,
         });
+        console.log(stream);
         myStreamRef.current = stream;
+        const myVideo = document.createElement("video");
+        myVideo.muted = true;
         addVideoToGrid(myVideo, stream);
       } catch (error) {
         console.error("Error accessing media devices:", error);
+        alert(
+          "Failed to access camera/microphone. Please check your permissions."
+        );
       }
     };
-
     setupStream();
 
     socketRef.current.on("user-connected", ({ userId }) => {
@@ -92,6 +94,13 @@ function Room() {
     socketRef.current.on("user-disconnected", (userId) => {
       console.log("User disconnected:", userId);
     });
+
+    return () => {
+      console.log("Cleaning up...");
+      peerRef.current?.destroy();
+      myStreamRef.current?.getTracks().forEach((track) => track.stop());
+      socketRef.current?.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -106,6 +115,16 @@ function Room() {
   }, [callCut]);
 
   const addVideoToGrid = (videoElement, stream) => {
+    if (!stream || stream.getVideoTracks().length === 0) {
+      // If no video stream, display a placeholder
+      const placeholder = document.createElement("div");
+      placeholder.innerText = "No Video Available";
+      placeholder.className =
+        "flex items-center justify-center w-full h-40 bg-gray-700 text-white text-lg rounded-lg";
+      videoGridRef.current.append(placeholder);
+      return;
+    }
+
     videoElement.srcObject = stream;
     videoElement.addEventListener("loadedmetadata", () => {
       videoElement.play();
@@ -115,7 +134,7 @@ function Room() {
 
   const connectToNewUser = async (userId, stream) => {
     console.log("Calling user:", userId);
-    console.log(peerRef.current.call);
+    console.log(peerRef.current);
     console.log(stream);
     console.log(userId);
     try {
@@ -155,37 +174,35 @@ function Room() {
   };
 
   return (
-    <div
-      ref={videoGridRef}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-gray-800 via-gray-900 to-black rounded-xl shadow-xl text-white"
-    >
-      {/* Meeting Name Header */}
-      <h1 className="text-3xl font-extrabold col-span-full text-center bg-gradient-to-r from-blue-400 to-purple-600 p-4 rounded-lg shadow-lg">
-        {meetingName}
-      </h1>
-
-      {/* Add User Button */}
-      <div className="flex justify-center mt-4">
+    <div className="flex flex-col h-screen bg-gray-800 text-white">
+      {/* add user popup */}
+      {addUserPopup && (
+        <AddUserPopup roomId={roomId} setShowPopup={setAddUserPopup} />
+      )}
+      <header className="bg-gray-800 py-3 px-6 flex justify-between items-center">
+        <h1 className="text-xl font-semibold text-blue-400">{meetingName}</h1>
         <button
-          onClick={() => alert("The room ID is " + roomId)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+          onClick={() => setAddUserPopup(true)}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md"
         >
           Add User
         </button>
+      </header>
+      <div className="flex flex-grow overflow-hidden">
+        <div
+          ref={videoGridRef}
+          className="grid gap-4 p-4 flex-grow justify-center items-center m-auto"
+        ></div>
       </div>
-
-      {/* Action Button Container */}
-      <div className="col-span-full mt-6 flex justify-center">
+      <div className="absolute bottom-0 right-2/4">
         <ActionButtonContainer
           audioOn={audioOn}
           setAudioOn={setAudioOn}
           videoOn={videoOn}
           setVideoOn={setVideoOn}
           setCallCut={setCallCut}
-          toggleAudio={toggleAudio}
-          toggleVideo={toggleVideo}
-        />
-      </div>
+          />
+          </div>
     </div>
   );
 }
