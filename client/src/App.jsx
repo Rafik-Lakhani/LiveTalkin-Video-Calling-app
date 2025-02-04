@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -12,6 +9,8 @@ import NotFound from "./pages/NotFound";
 import JoinMeeting from "./pages/JoinMeeting";
 import CreateMeeting from "./pages/CreateMeeting";
 import Room from "./pages/Room";
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -21,11 +20,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route
           path="/about"
-          element={<h1 className="text-3xl font-bold underline">About Us</h1>}
+          element={<AboutUs />}
         />
         <Route
           path="/contact"
-          element={<h1 className="text-3xl font-bold underline">Contact Us</h1>}
+          element={<Contact />}
         />
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
